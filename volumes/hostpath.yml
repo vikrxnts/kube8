@@ -1,0 +1,30 @@
+
+
+apiVersion: v1
+kind: Pod
+
+metadata:
+  name: hostpath
+  namespace: web
+  labels:
+    app: web
+
+spec:
+  containers:
+    - name: hp
+      image: nginx
+      imagePullPolicy: IfNotPresent
+      ports:
+        - containerPort: 80
+      volumeMounts:
+        - name: webmount
+          mountPath: /data
+  
+  nodeSelector:
+    role: small
+
+  volumes:
+    - name: webmount
+      hostPath: 
+        path: /tmp/data
+

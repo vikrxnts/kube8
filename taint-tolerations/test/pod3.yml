@@ -1,0 +1,22 @@
+
+
+apiVersion: v1
+kind: Pod
+
+metadata:
+  name: pod3
+  namespace: web
+  labels:
+    app: db
+
+spec:
+  containers:
+    - name: web
+      image: nginx
+      imagePullPolicy: IfNotPresent
+      ports:
+        - containerPort: 80
+  tolerations:
+    - key: "mysize"
+      value: "medium"
+      effect: "NoSchedule"

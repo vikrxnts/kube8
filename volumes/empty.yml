@@ -1,0 +1,25 @@
+
+apiVersion: v1
+kind: Pod
+
+metadata:
+  name: volchek
+  namespace: web
+  labels:
+    app: web
+
+spec:
+  containers:
+    - name: web
+      image: nginx
+      imagePullPolicy: IfNotPresent
+      ports:
+        - containerPort: 80
+      volumeMounts:
+        - name: webmount
+          mountPath: /data
+       
+  volumes:
+    - name: webmount
+      emptyDir: {} 
+  

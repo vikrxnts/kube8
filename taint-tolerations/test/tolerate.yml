@@ -1,0 +1,21 @@
+
+apiVersion: v1
+kind: Pod
+
+metadata:
+  name: wb8
+  namespace: web
+  labels:
+    app: web
+
+spec:
+  containers: 
+    - name: wb
+      image: nginx
+      imagePullPolicy: IfNotPresent
+      ports:
+        - containerPort: 80
+  tolerations:
+    - key: "mysize"
+      operator: "Exists"
+      effect: "NoSchedule"

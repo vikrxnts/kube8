@@ -1,0 +1,23 @@
+
+
+apiVersion: v1
+kind: Pod
+
+metadata:
+  name: pod2
+  namespace: web
+  labels:
+    role: tolerations
+
+spec:
+  containers:
+    - name: web
+      image: nginx
+      imagePullPolicy: IfNotPresent
+      ports:
+        - containerPort: 80
+  tolerations:
+    - key: "mysize"
+      operator: "Equal"
+      value: "large"
+      effect: "NoSchedule"
