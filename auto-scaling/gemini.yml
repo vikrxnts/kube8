@@ -1,0 +1,41 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: app-hpa
+  namespace: default
+spec:
+  # Target workload to scale
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: prodv2 # Target your active deployment name
+
+  # Scaling bounds
+  minReplicas: 5
+  maxReplicas: 100
+
+  # Scaling metrics
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70 # Scale up if average CPU hits > 70% of requested CPU
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80 # Scale up if average RAM hits > 80% of requested RAM
+
+  # Optional: Fine-tune scaling speed (prevents rapid flapping)
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 0 # React immediately on high load
+      policies:
+      - type: Percent
+        value: 100 # Double pods max per 15s check
+        periodSeconds: 15
+    scaleDown:
+      stabilizationWindowSeconds: 300 # Wait 5 mins before scaling down to handle traffic spikes smoothly
