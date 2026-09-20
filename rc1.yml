@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ReplicationController
+
+metadata:
+  name: rctrl
+
+spec:
+  replicas: 3
+  selector:
+    app: web
+  template:
+    metadata:
+      name: pods
+      labels:
+        app: web
+    spec:
+      containers:
+        - name: web
+          image: nginx
+          env:
+            - name: n1
+              value: v1
+          ports:
+            - containerPort: 80
+          command: ["/bin/bash"]
+          args:
+            - -c
+            - |
+              echo "test webpage" > /usr/share/nginx/html/index.html;

@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: fdeploy
+
+spec:
+  replicas: 5
+  minReadySeconds: 10
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate 
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      name: pod-creations
+      labels:
+        app: web
+    spec:
+      containers:
+        - name: web
+          image: httpd
+          env:
+            - name: use
+              value: webserver
+          ports:
+            - containerPort: 80
+        - name: db
+          image: mariadb:11.4
+          env:
+            - name: MARIADB_ROOT_PASSWORD
+              value: root123
+          ports:
+            - containerPort: 3306

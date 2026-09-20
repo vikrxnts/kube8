@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: fd
+
+spec:
+  replicas: 3
+  selector: 
+    matchLabels:
+      app: myapp123
+  template:
+    metadata:
+      labels:
+        app: myapp123
+    spec:
+      containers:
+        - name: web
+          image: nginx
+          ports:
+            - containerPort: 80
