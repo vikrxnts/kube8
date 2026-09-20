@@ -1,0 +1,83 @@
+
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: webhost
+  namespace: web
+  annotations:
+    kubernetes.io/change-cause: 'deploy version 1'
+  labels:
+    role: webapp
+
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      role: webapp
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        role: webapp
+    spec:
+      containers:
+        - name: webserver
+          image: nginx:1.27
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: webmount
+              mountPath: /usr/share/nginx/html
+              readOnly: true
+
+          readinessProbe:
+            httpGet: 
+              path: /
+              port: 80
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 2
+            failureThreshold: 3
+
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
+
+      volumes:
+        - name: webmount
+          configMap:
+            name: modpage
+
+---
+
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: expose
+  namespace: web
+  labels:
+    role: webapp
+
+spec:
+  type: NodePort
+  ports:
+    - nodePort: 32002
+      port: 80
+      targetPort: 80
+  selector:
+    role: webapp
+

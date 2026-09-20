@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+
+metadata:
+  name: pod2
+  namespace: web
+  
+spec:
+  containers:
+    - name: web
+      image: vikrxnt29/nginx:v2
+      ports:
+        - containerPort: 80
+      envFrom:
+        - configMapRef:
+             name: envcm

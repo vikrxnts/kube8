@@ -1,0 +1,16 @@
+apiVersion: v1
+
+data:
+   basic.config: |
+     # this is basic Config
+     
+     name='vikrxnt'
+     surname='khandalkar'
+     role='sre' 
+
+
+kind: ConfigMap
+
+metadata:
+  name: withfile
+  namespace: web

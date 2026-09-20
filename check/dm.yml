@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: web-deploy
+
+spec:
+  replicas: 10
+  selector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - web
+          - db
+  template:
+    metadata:
+      name: pods
+      labels:
+        app: web
+    spec:
+      containers:
+        - name: web
+          image: nginx
+          ports:
+            - containerPort: 80
+          env:
+            - name: n1
+              value: v1
+        - name: db
+          image: mariadb:11.4
+          env: 
+            - name: MARIADB_ROOT_PASSWORD
+              value: mysecretpassword
+          ports:
+            - containerPort: 3306
+

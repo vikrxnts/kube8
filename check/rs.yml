@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+
+metadata:
+  name: rset
+
+spec:
+  replicas: 3
+  selector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - web
+          - db
+      - key: type
+        operator: NotIn
+        values:
+          - frontend
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+        - name: web
+          image: nginx
+          env: 
+            - name: n1
+              value: v1
+          ports:
+            - containerPort: 80

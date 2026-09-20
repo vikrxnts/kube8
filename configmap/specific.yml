@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Pod
+
+metadata:
+  name: pod4
+  namespace: web
+   
+spec:
+  containers:
+    - name: web
+      image: vikrxnt29/nginx:v1
+      ports:
+        - containerPort: 80
+      volumeMounts:
+        - name: test 
+          mountPath: "/basic"
+          readOnly: true
+
+  volumes:
+    - name: test 
+      configMap:
+        name: envcm    
+        items:                           # In envcm have 5 key but if you want only specific
+          - key: name1                   # then you should just add name in key section
+            path: this_is_name1          # in path you have to add name so its change to that name
+          - key: name3
+            path: this_is_name3

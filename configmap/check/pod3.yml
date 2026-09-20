@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+
+metadata:
+  name: pod3
+  namespace: web
+
+spec:
+  containers:
+    - name: web
+      image: vikrxnt29/nginx:v3
+      ports:
+        - containerPort: 80
+      env:
+        - name: test
+          valueFrom:
+            configMapKeyRef:
+              name: cm1
+              key: basic.conf

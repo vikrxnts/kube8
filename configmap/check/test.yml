@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: webserver
+  namespace: web
+  annotations:
+    kubernetes.io/change-cause: 'deployment version 1'
+  labels:
+    app: web
+
+spec:
+  replicas: 10
+  strategy:
+    rollingUpdate: 
+

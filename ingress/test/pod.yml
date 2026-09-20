@@ -1,0 +1,49 @@
+
+
+# Pod
+
+apiVersion: v1
+kind: Pod
+
+metadata:
+  name: pod
+  namespace: web
+  labels:
+    role: webapp
+
+spec:
+  containers:
+    - name: web
+      image: nginx:1.27
+      imagePullPolicy: IfNotPresent
+      ports:
+        - containerPort: 80
+          protocol: TCP
+          name: http
+      volumeMounts:
+        - name: webmount
+          mountPath: /usr/share/nginx/html
+          readOnly: true
+  volumes:
+    - name: webmount
+      configMap:
+        name: ihtml
+
+---
+
+# Service
+
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: cip
+  namespace: web
+
+spec:
+  type: ClusterIP
+  ports:
+    - targetPort: 80
+      port: 80
+  selector:
+    role: webapp

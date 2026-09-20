@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: website
+  namespace: default
+  annotations:
+    kubernetes.io/change-cause: "version 1"
+  labels:
+    app: web
+
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: web
+  strategy:
+    rollingUpdate:
+      maxSurge: 5
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+        - name: webserver
+          image: vikrxnt29/nginx:v1
+          ports:
+            - containerPort: 80
+          resources:
+            limits:
+              cpu: 100m
+              memory: 500Mi
+            requests:
+              cpu: 10m
+              memory: 50Mi
+        
+---
+
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: expose
+  namespace: default
+
+spec:
+  type: NodePort
+  ports:
+    - nodePort: 32001
+      port: 1111
+      targetPort: 80
+  selector:
+    app: web

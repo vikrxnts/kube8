@@ -1,0 +1,62 @@
+
+
+# Green Deployment
+
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: green
+  namespace: web
+  annotations:
+    kubernetes.io/change-cause: 'green version 2'
+
+spec:
+  replicas: 5
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 3
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      role: green
+  template:
+    metadata:
+      labels:
+        role: green
+    spec:
+      containers:
+        - name: web
+          image: nginx
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          volumeMounts:
+            - name: greenmount
+              mountPath: /usr/share/nginx/html
+              readOnly: true
+      volumes:
+        - name: greenmount
+          configMap:
+            name: v2
+
+---
+
+# Service
+
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: greenservice
+  namespace: web
+
+spec:
+  type: ClusterIP
+  ports:
+    - targetPort: 80
+      port: 80
+  selector:
+    role: green

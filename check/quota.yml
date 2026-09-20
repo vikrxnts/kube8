@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ResourceQuota
+
+metadata:
+  name: quota
+  namespace: web
+
+spec:
+  hard:
+    limits.cpu: 500m
+    limits.memory: 1Gi
+    requests.cpu: 10m
+    requests.memory: 50Mi
+    pods: 5

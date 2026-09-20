@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ResouceQuota
+
+metadata:
+  name: quota
+
+spec:
+  hard:
+    pods: 5
+

@@ -1,0 +1,24 @@
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+
+metadata:
+  name: webingress
+  namespace: web
+  labels:
+    role: webapp
+
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: webapp.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: cip
+                port:
+                  number: 80
+

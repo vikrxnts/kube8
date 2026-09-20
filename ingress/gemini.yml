@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-backend
+  namespace: web
+  labels:
+    app: my-nginx
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: my-nginx
+  template:
+    metadata:
+      labels:
+        app: my-nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-backend-svc
+spec:
+  type: ClusterIP  # As requested, internal cluster IP only
+  ports:
+  - port: 80       # The port the service exposes inside the cluster
+    targetPort: 80 # The port the NGINX container is listening on
+  selector:
+    app: my-nginx

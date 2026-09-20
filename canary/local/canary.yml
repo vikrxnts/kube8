@@ -1,0 +1,89 @@
+
+# canary Deployment
+
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: prodv2
+  namespace: web
+  annotations:
+    kubernetes.io/change-cause: 'canary v2'
+
+spec:
+  replicas: 5
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      role: canary
+  template:
+    metadata:
+      labels:
+        role: canary
+    spec:
+      containers:
+        - name: web
+          image: nginx:1.27
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          volumeMounts:
+            - name: canarymount
+              mountPath: /usr/share/nginx/html
+              readOnly: true
+      volumes:
+        - name: canarymount
+          configMap:
+            name: v2
+
+---
+
+# Service
+
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: canarycip
+  namespace: web
+
+spec:
+  type: ClusterIP
+  ports:
+    - targetPort: 80
+      port: 80
+  selector:
+    role: canary
+
+---
+
+# Ingress
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+
+metadata:
+  name: canaryingress
+  namespace: web
+  annotations:
+    nginx.ingress.kubernetes.io/canary: "true"
+    nginx.ingress.kubernetes.io/canary-weight: "100"
+
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: webapp.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: canarycip
+                port:
+                  number: 80

@@ -1,0 +1,27 @@
+
+apiVersion: v1
+kind: Pod
+
+metadata:
+  name: node-selector
+  namespace: web
+  labels:
+    app: web
+
+spec:
+  containers:
+    - name: web
+      image: nginx
+      imagePullPolicy: IfNotPresent  
+      ports:
+        - containerPort: 80
+  nodeSelector:
+    hardware: "strong"
+
+
+
+# Steps
+#  
+#  ->  you have to attach lables to NODE
+#  ->  use nodeSelector and add label in pod defination
+

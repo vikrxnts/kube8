@@ -1,0 +1,21 @@
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+
+metadata:
+  name: bgingress
+  namespace: web
+
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: webapp.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: blueservice
+                port: 
+                  number: 80
